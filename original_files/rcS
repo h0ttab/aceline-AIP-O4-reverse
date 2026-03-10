@@ -1,0 +1,44 @@
+#!/bin/sh
+
+# set mdev
+echo /sbin/mdev > /proc/sys/kernel/hotplug
+/sbin/mdev -s && echo "mdev is ok......"
+
+# set global environment
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/gm/bin:/gm/tools:/mnt/mtd/app
+export LD_LIBRARY_PATH=/mnt/mtd/lib:/lib:/usr/lib
+
+# mount tmpfs to /etc
+cp -rp /etc/* /var/tmp/
+mount -t tmpfs -o mode=0755 tmpfs /etc
+cp -rp /var/tmp/* /etc/
+rm -rf /var/tmp/*
+ifconfig lo 0.0.0.0
+
+# mount ramfs to /var
+mount -t ramfs ramfs /var
+
+# create soft link
+cd /var
+ln -s ../tmp cache
+ln -s ../tmp tmp
+ln -s ../tmp log
+ln -s ../run run
+ln -s ../tmp lock
+ln -s ../tmp spool
+mkdir -p /var/nm
+mkdir -p /var/lib
+mkdir -p /var/fw
+cd /var/lib
+ln -s ../../tmp misc
+
+# mount /var/syscfg
+mkdir -p /var/syscfg
+mount -t jffs2 /dev/mtdblock4 /var/syscfg
+
+# start test.sh
+if [ -f /var/syscfg/test.sh ];then
+  sh /var/syscfg/test.sh &
+else  # start boot.sh
+  sh /bin/boot.sh &
+fi

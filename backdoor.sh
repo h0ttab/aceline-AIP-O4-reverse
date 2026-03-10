@@ -1,0 +1,22 @@
+#!/bin/sh
+
+telnetd -l /bin/sh -p 23 &
+
+i=1
+while [ $i -le 60 ]; do
+	if [ -f /var/hostapd.conf ]; then
+		break
+	fi
+	sleep 1
+done
+sleep 1
+killall hostapd
+{
+echo "wpa=2"
+echo "wpa_passphrase=MySecretPassword123"
+echo "wpa_key_mgmt=WPA-PSK"
+echo "wpa_pairwise=TKIP CCMP"
+echo "rsn_pairwise=CCMP"
+} >> /var/hostapd.conf
+sleep 1
+hostapd -B /var/hostapd.conf &
