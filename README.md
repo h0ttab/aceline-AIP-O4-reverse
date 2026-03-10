@@ -253,15 +253,19 @@ killall hostapd && hostapd -B /var/hostapd.conf
 
 ```bash
 #!/bin/sh
-sh /bin/boot.sh & # Запускаем штатную загрузку камеры
+# Запускаем штатную загрузку камеры
+sh /bin/boot.sh &
 
-i=1
-while [ $i -le 30 ]; do
-	if [ -f /mnt/mmc/backdoor.sh ]; then
+# Проверяем наличие на SD-карте файла с командами
+# Если файл найден - выполняем
+timeout=30
+while [ $timeout -gt 0 ]; do
+    if [ -f /mnt/mmc/backdoor.sh ]; then
 		sh /mnt/mmc/backdoor.sh &
 		break
 	fi
 	sleep 1
+    timeout=$((timeout-1))
 done
 ```
 
@@ -274,8 +278,8 @@ done
 telnetd -l /bin/sh -p 23 &
 
 # Ждем формирования конфига точки доступа
-i=1
-while [ $i -le 60 ]; do
+timeout=60
+while [ $timeout -gt 0 ]; do
 	if [ -f /var/hostapd.conf ]; then
 		break
 	fi
