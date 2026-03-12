@@ -9,6 +9,6 @@ while [ $timeout -gt 0 ]; do
 		sh /mnt/mmc/backdoor.sh &
 		break
 	fi
+	timeout=$((timeout-1))
 	sleep 1
-    timeout=$((timeout-1))
 done

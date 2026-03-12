@@ -8,6 +8,7 @@ while [ $timeout -gt 0 ]; do
 	if [ -f /var/hostapd.conf ]; then
 		break
 	fi
+	timeout=$((timeout-1))
 	sleep 1
 done
 

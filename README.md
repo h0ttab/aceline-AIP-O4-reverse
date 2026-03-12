@@ -263,8 +263,8 @@ while [ $timeout -gt 0 ]; do
 		sh /mnt/mmc/backdoor.sh &
 		break
 	fi
-	sleep 1
     timeout=$((timeout-1))
+	sleep 1
 done
 ```
 
@@ -282,6 +282,7 @@ while [ $timeout -gt 0 ]; do
 	if [ -f /var/hostapd.conf ]; then
 		break
 	fi
+    timeout=$((timeout-1))
 	sleep 1
 done
 sleep 1
